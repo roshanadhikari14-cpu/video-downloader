@@ -18,6 +18,16 @@ python server.py
 
 It opens at http://127.0.0.1:5055 and saves files to the `downloads` folder. On Windows you can also double-click `Start Downloader.bat`.
 
+## Use your PC's copy from anywhere (Cloudflare tunnel)
+
+YouTube often blocks cloud servers but not home connections. To reach the copy on your own PC from your phone or anywhere else:
+
+1. Install the tunnel tool once: `winget install Cloudflare.cloudflared`
+2. Double-click `Start Remote Access.bat`.
+3. It prints a public `https://….trycloudflare.com` link (also copied to your clipboard) and a password. Any username works.
+
+The password is saved in `remote-password.txt` (never uploaded). Edit it to change it. The link changes each time you start it, and your PC must stay on with the window open. Setting `APP_PASSWORD` protects any copy of the app, including the hosted one.
+
 ## Put it online (Render)
 
 [![Deploy to Render](https://render.com/images/deploy-to-render-button.svg)](https://render.com/deploy?repo=https://github.com/roshanadhikari14-cpu/video-downloader)

@@ -6,6 +6,7 @@ Hosted use:  PUBLIC_MODE=1 gunicorn -w 1 --threads 8 -b 0.0.0.0:$PORT server:app
 In public mode every visitor only sees their own downloads, files are sent to
 the visitor's browser, and finished files are deleted after FILE_TTL_MINUTES.
 """
+import hmac
 import os
 import re
 import shutil
@@ -17,7 +18,7 @@ import uuid
 import webbrowser
 from pathlib import Path
 
-from flask import Flask, abort, jsonify, request, send_file, send_from_directory
+from flask import Flask, Response, abort, jsonify, request, send_file, send_from_directory
 
 import yt_dlp
 
@@ -27,6 +28,8 @@ DOWNLOADS.mkdir(parents=True, exist_ok=True)
 
 PUBLIC = os.environ.get('PUBLIC_MODE', '').lower() in ('1', 'true', 'yes')
 PORT = int(os.environ.get('PORT', 5055))
+HOST = os.environ.get('HOST', '0.0.0.0' if PUBLIC else '127.0.0.1')
+APP_PASSWORD = os.environ.get('APP_PASSWORD', '')
 FILE_TTL = int(os.environ.get('FILE_TTL_MINUTES', 60)) * 60
 MAX_FILESIZE_MB = int(os.environ.get('MAX_FILESIZE_MB', 1024 if PUBLIC else 0))
 MAX_ACTIVE_PER_VISITOR = int(os.environ.get('MAX_ACTIVE_PER_VISITOR', 2 if PUBLIC else 20))
@@ -60,6 +63,17 @@ refresh_path()
 app = Flask(__name__, static_folder='static', static_url_path='/static')
 jobs = {}
 lock = threading.Lock()
+
+
+@app.before_request
+def require_password():
+    """When APP_PASSWORD is set, ask the browser for it (any username works)."""
+    if not APP_PASSWORD:
+        return None
+    auth = request.authorization
+    if auth and auth.password and hmac.compare_digest(auth.password.encode(), APP_PASSWORD.encode()):
+        return None
+    return Response('Password required.', 401, {'WWW-Authenticate': 'Basic realm="Downloader", charset="UTF-8"'})
 
 
 def clean_error(err):
@@ -323,8 +337,7 @@ if PUBLIC:
 
 
 if __name__ == '__main__':
-    host = '0.0.0.0' if PUBLIC else '127.0.0.1'
     if not PUBLIC and '--no-browser' not in sys.argv:
         threading.Timer(1.0, lambda: webbrowser.open(f'http://127.0.0.1:{PORT}')).start()
     print(f'Downloader running at http://127.0.0.1:{PORT}  (Ctrl+C to stop)')
-    app.run(host=host, port=PORT, threaded=True)
+    app.run(host=HOST, port=PORT, threaded=True)

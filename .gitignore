@@ -1,4 +1,6 @@
 downloads/
+downloads-remote/
+remote-password.txt
 __pycache__/
 *.pyc
 .venv/
