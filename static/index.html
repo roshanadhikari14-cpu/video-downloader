@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Downloader</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/style.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='9' fill='%23ff4d6d'/><path d='M16 8v12m0 0-5-5m5 5 5-5M10 24h12' stroke='white' stroke-width='2.6' fill='none' stroke-linecap='round' stroke-linejoin='round'/></svg>">
+</head>
+<body>
+  <div class="glow glow-a" aria-hidden="true"></div>
+  <div class="glow glow-b" aria-hidden="true"></div>
+
+  <header class="topbar">
+    <div class="brand">
+      <span class="logo" aria-hidden="true">
+        <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M6 20h12"/></svg>
+      </span>
+      <span class="brand-name">Downloader</span>
+    </div>
+    <button class="ghost-btn" id="openFolder" type="button">
+      <svg viewBox="0 0 24 24"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      Open downloads folder
+    </button>
+  </header>
+
+  <main class="wrap">
+    <section class="hero">
+      <h1>Save any video. <span class="grad">Keep it forever.</span></h1>
+      <p class="sub">Paste a link from YouTube or one of 1,000+ supported sites. Choose video or audio, and you're done.</p>
+
+      <form class="search" id="searchForm" autocomplete="off">
+        <svg class="search-icon" viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.66 0l3-3a4 4 0 0 0-5.66-5.66l-1 1M14 10a4 4 0 0 0-5.66 0l-3 3a4 4 0 0 0 5.66 5.66l1-1"/></svg>
+        <input id="url" type="url" placeholder="https://www.youtube.com/watch?v=…" aria-label="Video link" required>
+        <button class="paste-btn" id="pasteBtn" type="button" title="Paste from clipboard">Paste</button>
+        <button class="primary-btn" id="fetchBtn" type="submit">
+          <span class="btn-label">Get video</span>
+          <span class="spinner" aria-hidden="true"></span>
+        </button>
+      </form>
+      <p class="error" id="error" role="alert" hidden></p>
+    </section>
+
+    <section class="card preview" id="preview" hidden>
+      <div class="thumb">
+        <img id="thumb" alt="">
+        <span class="duration" id="duration"></span>
+      </div>
+      <div class="details">
+        <span class="site-pill" id="site"></span>
+        <h2 id="title"></h2>
+        <p class="meta" id="meta"></p>
+
+        <div class="option-group">
+          <span class="option-label">Format</span>
+          <div class="segmented" role="tablist" id="modeSwitch">
+            <button type="button" role="tab" data-mode="video" class="active">
+              <svg viewBox="0 0 24 24"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3"/></svg>
+              Video
+            </button>
+            <button type="button" role="tab" data-mode="audio">
+              <svg viewBox="0 0 24 24"><path d="M9 18V6l11-2v12"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/></svg>
+              Audio only
+            </button>
+            <span class="seg-indicator" aria-hidden="true"></span>
+          </div>
+        </div>
+
+        <div class="option-group">
+          <span class="option-label" id="qualityLabel">Quality</span>
+          <div class="chips" id="chips"></div>
+        </div>
+
+        <button class="primary-btn big" id="downloadBtn" type="button">
+          <svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M6 20h12"/></svg>
+          <span id="downloadLabel">Download</span>
+        </button>
+      </div>
+    </section>
+
+    <section class="downloads">
+      <div class="section-head">
+        <h3>Downloads</h3>
+        <span class="count" id="count"></span>
+      </div>
+      <ul class="job-list" id="jobs"></ul>
+      <div class="empty" id="empty">
+        <div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4.5-4.5M12 15l4.5-4.5M6 20h12"/></svg></div>
+        <p>Your downloads will show up here.</p>
+      </div>
+    </section>
+
+    <footer class="foot">Built on <a href="https://github.com/yt-dlp/yt-dlp" target="_blank" rel="noopener">yt-dlp</a>. Only download content you have the right to save.<span id="ttlNote"></span></footer>
+  </main>
+
+  <div class="toast" id="toast" role="status" hidden></div>
+  <script src="/static/app.js"></script>
+</body>
+</html>

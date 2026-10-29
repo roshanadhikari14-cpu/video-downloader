@@ -1,0 +1,13 @@
+services:
+  - type: web
+    name: video-downloader
+    runtime: docker
+    plan: free
+    healthCheckPath: /api/config
+    envVars:
+      - key: PUBLIC_MODE
+        value: "1"
+      - key: MAX_FILESIZE_MB
+        value: "500"
+      - key: FILE_TTL_MINUTES
+        value: "60"
