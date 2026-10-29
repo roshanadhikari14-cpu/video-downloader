@@ -32,11 +32,12 @@ $env:DOWNLOAD_DIR = Join-Path $here 'downloads-remote'
 $env:MAX_FILESIZE_MB = '4096'
 $env:MAX_ACTIVE_PER_VISITOR = '4'
 
-$logDir = Join-Path $env:TEMP 'downloader-remote'
-New-Item -ItemType Directory -Force $logDir | Out-Null
+# Logs live next to this script ($env:TEMP can be a short "MYPC~1" path that PowerShell 7 rejects).
+$logDir = Join-Path $here 'logs'
+New-Item -ItemType Directory -Force -Path $logDir | Out-Null
 $serverLog = Join-Path $logDir 'server.log'
 $tunnelLog = Join-Path $logDir 'tunnel.log'
-Remove-Item $tunnelLog -ErrorAction SilentlyContinue
+if (Test-Path -LiteralPath $tunnelLog) { Remove-Item -LiteralPath $tunnelLog -Force }
 
 Write-Host 'Starting the downloader...' -ForegroundColor Cyan
 $server = Start-Process $py -ArgumentList 'server.py' -WorkingDirectory $here -WindowStyle Hidden -PassThru `

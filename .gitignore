@@ -1,5 +1,6 @@
 downloads/
 downloads-remote/
+logs/
 remote-password.txt
 __pycache__/
 *.pyc
